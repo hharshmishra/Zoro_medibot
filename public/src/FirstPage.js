@@ -1,8 +1,7 @@
-import Chat from "./Chat.js";
 import HomePage from "./assets/HomePage.png";
 // import "./App.css";
 import styled from "styled-components"
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 
 export function Firstpage(){
@@ -19,7 +18,7 @@ export function Firstpage(){
                 <h1>Zoro Chat</h1>
                 <nav>
                 <div className="logo">
-                <img src="logo.png" />
+                <img className = "logoo" src={require('./assets/ZORO.png')} alt="Zorologo" />
                 </div>
                 </nav>
             </header>
@@ -52,8 +51,15 @@ background-position: center;
     flex-direction: column;
    }
    .logo{
-    margin: 4%;
+    margin-top: 1%;
+    margin-left: 6%;
     padding: 10px;
+    height: 260px;
+    width: 260px;
+   }
+   .logoo{
+    height:100%;
+    mix-blend-mode: multiply;
    }
     h2{
         font-size: 2rem;
@@ -75,7 +81,7 @@ background-position: center;
         text-align: left;
         transition: ease 0.25s all;
         margin-bottom: 100px;
-        margin-top: 100px;
+        margin-top: 60px;
         margin-left: 100px;
         font-size: 2rem;
         background: rgb(2,0,36);
