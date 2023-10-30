@@ -26,7 +26,7 @@ const handleClick = () => {
         <h1>ZORO-MEDIBOT</h1>
         <div className = 'side-menu-button' onClick={handleClick}>
           <span>&#8634;</span>
-          New Chat
+          Refresh Chat
         </div>
         <div className='container'>
             <div className="col-sm">

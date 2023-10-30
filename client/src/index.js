@@ -9,7 +9,7 @@ import {Firstpage} from "./FirstPage.js"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <Firstpage />
+    <App />
 );
 
 reportWebVitals();
