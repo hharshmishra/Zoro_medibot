@@ -13,7 +13,7 @@ class TextArea extends Component {
             <input
               className={this.props.classs}
               ref={c => (this.textarea = c)}
-              placeholder = "Hey! I'm Zoro, Your Personalised Medical Chatbot. How can I help?"
+              placeholder = {this.props.placeholderr}
               value = {this.props.valuee}
               onChange={this.props.handleOnChange}
               rows={1}

@@ -41,7 +41,7 @@ const Container = styled.div`
 height:100vh;
 width: 100vw;
 background: url(${HomePage});
-opacity: 0.90;
+opacity: 0.93;
 background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
