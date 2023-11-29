@@ -35,36 +35,46 @@ useEffect(() => {
     
     msg.push({user: "zoro" , message: ""})
     setChatLog(msg)
-    let response = "";
+    // const response = 'Zoro: Your message received!  Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker includ'; //Hard coded
     
-    const apiUrl = 'http://127.0.0.1:8000/api/heyzoro/';
-    fetch(apiUrl, {
-      method: 'POST', 
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify({ input }),
-    })
-    .then((res) => res.json())
-    .then((res) => response = res.message)
-    .catch((error) => console.error('Error: ', error));
-    
+    const apiUrl = '/api'; // Replace with your API endpoint
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+
+      // Assuming your backend responds with a message property
+      const backendResponse = data.message; // Modify this according to your API response structure
+
     setResponseMessage(response);
     let i = 0;
     setTypingMessage('Zoro is typing...');
     const intervalId = setInterval(() => {
-    if (i < response.length) {
-      const last = msg.slice(-1)[0].message;
-      msg.slice(-1)[0].message = last + response[i];
-      setChatLog([...msg]);
-      i++;
-    } else {
-      setIsZoroResponding(false);
-      setTypingMessage("Hey! I'm Zoro, Your Personalized Medical Chatbot. How can I help?");
-      clearInterval(intervalId);
-    }
-  }, 10); // Adjust the delay between each character
-  
+      if (i < response.length) {
+        const last = msg.slice(-1)[0].message;
+        msg.slice(-1)[0].message = last + response[i];
+        setChatLog([...msg]);
+        i++;
+      } else {
+        setIsZoroResponding(false);
+        setTypingMessage("Hey! I'm Zoro, Your Personalized Medical Chatbot. How can I help?");
+        clearInterval(intervalId);
+      }
+    }, 10); // Adjust the delay between each character
+  } catch (error) {
+    console.error('Error fetching response:', error);
+    // Handle the error as needed (e.g., show an error message to the user)
+  }
 };
 
 
