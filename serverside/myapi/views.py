@@ -31,7 +31,8 @@ def heyzoro(request):
             symptoms.extend(newsym)
             pred = prediction(symptoms)[:5]
             print(pred)
-            return JsonResponse({'message': 'Received POST data successfully', 'data': data, 'predictions': pred})
+            return JsonResponse({'message': 'Received POST data successfully', 'predictions': pred,
+                                 'symptoms': symptoms})
         except json.JSONDecodeError:
             return JsonResponse({'message': 'Invalid JSON data received'}, status=400)
     else:
