@@ -9,7 +9,7 @@ const [chatLog, setChatLog] = useState([]);
 const [isZoroResponding, setIsZoroResponding] = useState(false);
 const [typingMessage, setTypingMessage] = useState("Hey! I'm Zoro, Your Personalised Medical Chatbot. How can I help?");
 const [responseMessage, setResponseMessage] = useState('');
-const [symptomList, setSymptomList] = useState(["Symptom 1", "Symptom 2", "Symptom 3", "Symptom 4", "Symptom 5"]);
+const [symptomList, setSymptomList] = useState([]);
 const [diseaseList, setDiseaseList] = useState(["Headache", "Pneumonia", "Fever", "Dengue"]);
 const messagesEndRef = useRef(null)
 const scrollToBottom = () => {
@@ -35,20 +35,44 @@ useEffect(() => {
     
     msg.push({user: "zoro" , message: ""})
     setChatLog(msg)
-    let response = "";
+    var response = "";
     
     const apiUrl = 'http://127.0.0.1:8000/api/heyzoro/';
-    fetch(apiUrl, {
-      method: 'POST', 
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify({ input }),
-    })
-    .then((res) => res.json())
-    .then((res) => response = res.message)
-    .catch((error) => console.error('Error: ', error));
+    // fetch(apiUrl, {
+    //   method: 'POST', 
+    //   headers: {
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //   },
+    //   body: JSON.stringify({ prompt: input, symptoms: symptomList }),
+    // })
+    // .then((res) => res.json())
+    // .then((res) => {
+    //   // console.log(res.message);
+    //   response = res.message;
+    //   })
+    // .catch((error) => console.error('Error: ', error));
     
+    try {
+      const responsee = await fetch(apiUrl, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({ prompt: input, symptoms: symptomList }),
+      });
+  
+      if (!responsee.ok) {
+        throw new Error(`HTTP error! Status: ${responsee.status}`);
+      }
+  
+      const data = await responsee.json();
+      console.log(data);
+      response = data.message;
+      setSymptomList(data.predictions)
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  
     setResponseMessage(response);
     let i = 0;
     setTypingMessage('Zoro is typing...');
