@@ -31,7 +31,7 @@ def heyzoro(request):
             newsym = filter_symptoms(prompt)
             if not newsym:
                 message = found_none()
-                return JsonResponse({'message': message, 'status': 'in-progress'})
+                return JsonResponse({'message': message, 'status': 'no-change'})
             symptoms.extend(newsym)
             pred, acc = prediction(symptoms)
             pred = pred[:5]

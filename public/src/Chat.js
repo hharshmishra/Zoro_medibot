@@ -10,7 +10,9 @@ const [isZoroResponding, setIsZoroResponding] = useState(false);
 const [typingMessage, setTypingMessage] = useState("Hey! I'm Zoro, Your Personalised Medical Chatbot. How can I help?");
 const [responseMessage, setResponseMessage] = useState('');
 const [symptomList, setSymptomList] = useState([]);
-const [diseaseList, setDiseaseList] = useState(["Headache", "Pneumonia", "Fever", "Dengue"]);
+// const [probableSymptomList, setProbableSymptomList] = useState([]);
+const [diseaseList, setDiseaseList] = useState([]);
+const [reqNum, setReqNum] = useState(1);
 const messagesEndRef = useRef(null)
 const scrollToBottom = () => {
   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -19,9 +21,18 @@ useEffect(() => {
   scrollToBottom()
 }, [chatLog, input, responseMessage]);
 
+const handleClick = () => {
+  setInput("");
+  setChatLog([]);
+  setResponseMessage("");
+  setSymptomList([]);
+  setDiseaseList([]);
+  setReqNum(1);
+}
+
   async function HandleSubmit (e) {
     e.preventDefault();
-    // const response = await fetch('/api', {
+
     if (isZoroResponding) {
       return;
     }
@@ -36,42 +47,68 @@ useEffect(() => {
     msg.push({user: "zoro" , message: ""})
     setChatLog(msg)
     var response = "";
-    
+    var rn = reqNum;
+    rn++;
+
     const apiUrl = 'http://127.0.0.1:8000/api/heyzoro/';
-    // fetch(apiUrl, {
-    //   method: 'POST', 
-    //   headers: {
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //   },
-    //   body: JSON.stringify({ prompt: input, symptoms: symptomList }),
-    // })
-    // .then((res) => res.json())
-    // .then((res) => {
-    //   // console.log(res.message);
-    //   response = res.message;
-    //   })
-    // .catch((error) => console.error('Error: ', error));
-    
+
     try {
       const responsee = await fetch(apiUrl, {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: JSON.stringify({ prompt: input, symptoms: symptomList }),
+        body: JSON.stringify({ prompt: input, symptoms: symptomList, reqnum: reqNum }),
       });
-  
+      setSymptomList([]);
+
       if (!responsee.ok) {
         throw new Error(`HTTP error! Status: ${responsee.status}`);
       }
   
       const data = await responsee.json();
+
       console.log(data);
-      response = data.message;
-      setSymptomList(data.predictions)
+      if(data.status === "no-change"){
+        if(reqNum == 5){
+          response = data.remedy;
+          rn = 1;
+        }
+        else{
+          response = data.message;
+        }
+      }
+      else if(data.status === "in-progress"){
+        setSymptomList(data.symptoms);
+        setDiseaseList(data.predictions)
+        // setProbableSymptomList(data.probable_symptoms)
+        if(reqNum == 5){
+          response = data.remedy;
+          rn = 1;
+        }
+        else{
+          response = `${data.message}. Do you experience any of the following symptoms? ${data.probable_symptoms.join(', ')}`;
+        }
+      }
+      else{
+        setSymptomList(data.symptoms);
+        setDiseaseList(data.predictions);
+        // setProbableSymptomList(data.probable_symptoms);
+        if(reqNum == 5){
+          response = data.remedy;
+          rn = 1;
+        }
+        else{
+          response = `${data.message}. Do you experience any of the following symptoms? ${data.probable_symptoms.join(', ')}`;
+        }
+      }
+      console.log(response);
+      setReqNum(rn);
+      console.log(reqNum);
     } catch (error) {
       console.error('Error:', error);
     }
+    // console.log(probableSymptomList);
   
     setResponseMessage(response);
     let i = 0;
@@ -91,13 +128,6 @@ useEffect(() => {
   
 };
 
-
-const handleClick = () => {
-    setInput("");
-    setChatLog([]);
-    setResponseMessage("");
-}
-
   return (
     <div className="App">
       <aside className = 'sidemenu'>
@@ -111,7 +141,7 @@ const handleClick = () => {
                 Diseases
                 <br/>
                 <ul className='list'>
-                    {diseaseList.map((e, index) => (
+                    {diseaseList && diseaseList.map((e, index) => (
                       <li key={index}> {e} </li>
                     ))}
                 </ul>
@@ -120,10 +150,18 @@ const handleClick = () => {
                 Symptoms
                 <br />
                 <ul className='list'>
-                    {symptomList.map((e, index) => (
+                    {symptomList && symptomList.map((e, index) => (
                       <li key={index}> {e} </li>
                     ))}
                 </ul>
+                <br />
+                {/* Do you experience any of the following symptoms?
+                <ul className='list'>
+                    {probableSymptomList && probableSymptomList.map((e, index) => (
+                      <li key={index}> {e} </li>
+                    ))}
+                </ul>
+                <br /> */}
 
             </div>
         </div>
