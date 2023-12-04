@@ -78,4 +78,4 @@ def prediction(symptomList):
     similarity_score = find_similarity(bin_array, diseases_matrix)
     indices_dec = most_probable_disease(similarity_score)
     diseases_predicted = rearrangeDiseases(indices_dec)
-    return diseases_predicted
+    return diseases_predicted, similarity_score[indices_dec[0]]-similarity_score[indices_dec[1]]

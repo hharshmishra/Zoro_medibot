@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from .d_filter import filter_symptoms
 from .p_disease import prediction
+from .outputgen import give_result, found_none, request_more
 
 
 @csrf_exempt
@@ -16,6 +17,7 @@ def my_api_view(request):
     print("received")
     return JsonResponse(data)
 
+
 @csrf_exempt
 def heyzoro(request):
     if request.method == 'POST':
@@ -25,14 +27,25 @@ def heyzoro(request):
             data = json.loads(request.body)
             prompt = data["prompt"]
             symptoms = data['symptoms']
+            reqnum = data['reqnum']
             newsym = filter_symptoms(prompt)
             if not newsym:
-                pass
+                message = found_none()
+                return JsonResponse({'message': message, 'status': 'in-progress'})
             symptoms.extend(newsym)
-            pred = prediction(symptoms)[:5]
-            print(pred)
-            return JsonResponse({'message': 'Received POST data successfully', 'predictions': pred,
-                                 'symptoms': symptoms})
+            pred, acc = prediction(symptoms)
+            pred = pred[:5]
+
+            if reqnum == 5 or acc > 0.1:
+                message = give_result(pred[0])
+                return JsonResponse({'message': message, 'predictions': pred,
+                                     'symptoms': symptoms, 'status': 'completed'})
+
+            message = request_more()
+            print(message)
+
+            return JsonResponse({'message': message, 'predictions': pred,
+                                 'symptoms': symptoms,'status': 'in-progress'})
         except json.JSONDecodeError:
             return JsonResponse({'message': 'Invalid JSON data received'}, status=400)
     else:
