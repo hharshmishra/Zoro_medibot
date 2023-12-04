@@ -100,6 +100,6 @@ def find_unique_symptoms(disease_arr, symptoms_arr):
     for x in ans:
         res.append(symptoms[x])
     for x in res:
-        if x in symptoms_arr:
+        if x.lower() in symptoms_arr:
             res.pop(res.index(x))
     return res

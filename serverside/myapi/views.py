@@ -42,10 +42,12 @@ def heyzoro(request):
 
                 return JsonResponse({'message': message, 'predictions': pred,
                                      'symptoms': symptoms, 'status': 'completed',
-                                     'remedy':remedy})
+                                     'remedy': remedy})
 
             message = request_more()
             ask = find_unique_symptoms(pred, symptoms)
+            if len(ask) > 7:
+                ask = ask[:7]
 
             return JsonResponse({'message': message, 'predictions': pred,
                                  'symptoms': symptoms, 'status': 'in-progress',
