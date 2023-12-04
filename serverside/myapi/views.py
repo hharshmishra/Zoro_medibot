@@ -5,8 +5,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .d_filter import filter_symptoms
-from .p_disease import prediction
-from .outputgen import give_result, found_none, request_more
+from .p_disease import prediction, find_unique_symptoms
+from .outputgen import give_result, found_none, request_more, get_remedy
 
 
 @csrf_exempt
@@ -38,14 +38,18 @@ def heyzoro(request):
 
             if reqnum == 5 or acc > 0.1:
                 message = give_result(pred[0])
+                remedy = get_remedy(pred[0])
+
                 return JsonResponse({'message': message, 'predictions': pred,
-                                     'symptoms': symptoms, 'status': 'completed'})
+                                     'symptoms': symptoms, 'status': 'completed',
+                                     'remedy':remedy})
 
             message = request_more()
-            print(message)
+            ask = find_unique_symptoms(pred, symptoms)
 
             return JsonResponse({'message': message, 'predictions': pred,
-                                 'symptoms': symptoms,'status': 'in-progress'})
+                                 'symptoms': symptoms, 'status': 'in-progress',
+                                 'probable_symptoms': ask})
         except json.JSONDecodeError:
             return JsonResponse({'message': 'Invalid JSON data received'}, status=400)
     else:

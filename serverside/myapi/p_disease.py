@@ -78,4 +78,28 @@ def prediction(symptomList):
     similarity_score = find_similarity(bin_array, diseases_matrix)
     indices_dec = most_probable_disease(similarity_score)
     diseases_predicted = rearrangeDiseases(indices_dec)
-    return diseases_predicted, similarity_score[indices_dec[0]]-similarity_score[indices_dec[1]]
+    return diseases_predicted, similarity_score[indices_dec[0]] - similarity_score[indices_dec[1]]
+
+
+def find_unique_symptoms(disease_arr, symptoms_arr):
+    ans = []
+    dA = diseases.index(disease_arr[0])
+    dB = diseases.index(disease_arr[1])
+    dC = diseases.index(disease_arr[2])
+    i = 0
+    for x, y in zip(diseases_matrix[dA], diseases_matrix[dB]):
+        if x != y:
+            ans.append(i)
+        i += 1
+    i = 0
+    for x, y in zip(diseases_matrix[dA], diseases_matrix[dC]):
+        if x != y and i not in ans:
+            ans.append(i)
+        i += 1
+    res = []
+    for x in ans:
+        res.append(symptoms[x])
+    for x in res:
+        if x in symptoms_arr:
+            res.pop(res.index(x))
+    return res

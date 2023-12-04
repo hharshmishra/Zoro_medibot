@@ -8,7 +8,7 @@ file_path_remedy = os.path.abspath(os.path.join(os.path.dirname(__file__), 'reme
 with open(file_path_output, 'r') as file:
     output = json.load(file)
 
-with open(file_path_output, 'r') as file:
+with open(file_path_remedy, 'r') as file:
     remedy = json.load(file)
 
 result = output['Result']
@@ -25,13 +25,15 @@ def found_none():
 def give_result(disease_name):
     idx = randint(0, 19)
     res = result[idx]
-    out = res.replace("disease_name", disease_name)
-    return out+disease_name
+    out = res.replace("{disease_name}", disease_name)
+    return out
+
+
+def get_remedy(disease_name):
+    return remedy[disease_name]
 
 
 def request_more():
     idx = randint(0, 19)
     res = request[idx]
     return res
-
-
