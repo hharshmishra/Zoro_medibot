@@ -36,7 +36,7 @@ def heyzoro(request):
             pred, acc = prediction(symptoms)
             pred = pred[:5]
 
-            if reqnum == 5 or acc > 0.1:
+            if reqnum >= 5 or acc > 0.1:
                 message = give_result(pred[0])
                 remedy = get_remedy(pred[0])
 

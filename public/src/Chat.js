@@ -4,6 +4,7 @@ import TextArea from './components/textarea';
 import { useState, useEffect, React, useRef } from 'react';
 
 const Chat = () => {
+const [flag, setFlag] = useState(false);
 const [input, setInput] = useState("");
 const [chatLog, setChatLog] = useState([]);
 const [isZoroResponding, setIsZoroResponding] = useState(false);
@@ -28,6 +29,7 @@ const handleClick = () => {
   setSymptomList([]);
   setDiseaseList([]);
   setReqNum(1);
+  setFlag(false);
 }
 
   async function HandleSubmit (e) {
@@ -36,7 +38,6 @@ const handleClick = () => {
     if (isZoroResponding) {
       return;
     }
-    
     const msg = [...chatLog]
     console.log(msg);
     msg.push({user : "me", message: `${input}`})
@@ -49,9 +50,10 @@ const handleClick = () => {
     var response = "";
     var rn = reqNum;
     rn++;
-
+    
     const apiUrl = 'http://127.0.0.1:8000/api/heyzoro/';
-
+    
+  
     try {
       const responsee = await fetch(apiUrl, {
         method: 'POST', 
@@ -60,7 +62,6 @@ const handleClick = () => {
         },
         body: JSON.stringify({ prompt: input, symptoms: symptomList, reqnum: reqNum }),
       });
-      setSymptomList([]);
 
       if (!responsee.ok) {
         throw new Error(`HTTP error! Status: ${responsee.status}`);
@@ -71,8 +72,9 @@ const handleClick = () => {
       console.log(data);
       if(data.status === "no-change"){
         if(reqNum == 5){
-          response = data.remedy;
+          response = `${data.message} ${data.remedy}`;
           rn = 1;
+          setFlag(true)
         }
         else{
           response = data.message;
@@ -83,8 +85,9 @@ const handleClick = () => {
         setDiseaseList(data.predictions)
         // setProbableSymptomList(data.probable_symptoms)
         if(reqNum == 5){
-          response = data.remedy;
+          response = `${data.message} ${data.remedy}`;
           rn = 1;
+          setFlag(true)
         }
         else{
           response = `${data.message}. Do you experience any of the following symptoms? ${data.probable_symptoms.join(', ')}`;
@@ -95,8 +98,9 @@ const handleClick = () => {
         setDiseaseList(data.predictions);
         // setProbableSymptomList(data.probable_symptoms);
         if(reqNum == 5){
-          response = data.remedy;
+          response = `${data.message} ${data.remedy}`;
           rn = 1;
+          setFlag(true)
         }
         else{
           response = `${data.message}. Do you experience any of the following symptoms? ${data.probable_symptoms.join(', ')}`;
@@ -181,6 +185,7 @@ const handleClick = () => {
           placeholderr = {typingMessage}
           onSubmit = {HandleSubmit} 
           handleOnChange = {(e) => setInput(e.target.value)}
+          switch = {flag}
           />
         </div>
       </section>

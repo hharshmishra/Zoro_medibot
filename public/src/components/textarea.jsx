@@ -17,6 +17,7 @@ class TextArea extends Component {
               value = {this.props.valuee}
               onChange={this.props.handleOnChange}
               rows={1}
+              disabled = {this.props.switch}
             />
             </form>
         );
