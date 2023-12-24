@@ -134,6 +134,25 @@ const handleClick = () => {
 
   return (
     <div className="App">
+      <section className = 'chatbox'>
+        <div>
+          <div className='chat-section'>
+            {chatLog.map((message, index) => (
+              <ChatMessage key={index} className={`${message.user}`} message = {message}/>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+          </div>
+        <div className = 'chat-input-holder'>
+          <TextArea classs = "chat-input-textarea" 
+          valuee = {input}
+          placeholderr = {typingMessage}
+          onSubmit = {HandleSubmit} 
+          handleOnChange = {(e) => setInput(e.target.value)}
+          switch = {flag}
+          />
+        </div>
+      </section>
       <aside className = 'sidemenu'>
         <h1>ZORO-MEDIBOT</h1>
         <div className = 'side-menu-button' onClick={handleClick}>
@@ -170,25 +189,7 @@ const handleClick = () => {
             </div>
         </div>
       </aside>
-      <section className = 'chatbox'>
-        <div>
-          <div className='chat-section'>
-            {chatLog.map((message, index) => (
-              <ChatMessage key={index} className={`${message.user}`} message = {message}/>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-          </div>
-        <div className = 'chat-input-holder'>
-          <TextArea classs = "chat-input-textarea" 
-          valuee = {input}
-          placeholderr = {typingMessage}
-          onSubmit = {HandleSubmit} 
-          handleOnChange = {(e) => setInput(e.target.value)}
-          switch = {flag}
-          />
-        </div>
-      </section>
+      
     </div>
   );
 }
