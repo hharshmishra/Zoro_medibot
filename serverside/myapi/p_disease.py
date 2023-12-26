@@ -52,16 +52,17 @@ def find_similarity(arr, matrix):
 
 
 def most_probable_disease(similarity_score):
+    ss = similarity_score.copy()
     n = len(similarity_score)
     result = []
     for i in range(n):
         max_val = float('-inf')
         max_pos = float('-inf')
         for j in range(n):
-            if similarity_score[j] > max_val:
-                max_val = similarity_score[j]
+            if ss[j] > max_val:
+                max_val = ss[j]
                 max_pos = j
-        similarity_score[max_pos] = -1
+        ss[max_pos] = -1
         result.append(max_pos)
     return result
 

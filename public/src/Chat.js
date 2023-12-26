@@ -103,7 +103,9 @@ const handleClick = () => {
           setFlag(true)
         }
         else{
-          response = `${data.message}. Do you experience any of the following symptoms? ${data.probable_symptoms.join(', ')}`;
+          response = `${data.message} ${data.remedy}`;
+          rn = 1;
+          setFlag(true)
         }
       }
       console.log(response);

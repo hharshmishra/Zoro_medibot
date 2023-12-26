@@ -35,11 +35,9 @@ def heyzoro(request):
             symptoms.extend(newsym)
             pred, acc = prediction(symptoms)
             pred = pred[:5]
-
-            if reqnum >= 5 or acc > 0.1:
+            if reqnum >= 5 or acc > 0.05:
                 message = give_result(pred[0])
                 remedy = get_remedy(pred[0])
-
                 return JsonResponse({'message': message, 'predictions': pred[0:1],
                                      'symptoms': symptoms, 'status': 'completed',
                                      'remedy': remedy})
