@@ -40,7 +40,7 @@ def heyzoro(request):
                 message = give_result(pred[0])
                 remedy = get_remedy(pred[0])
 
-                return JsonResponse({'message': message, 'predictions': pred[0],
+                return JsonResponse({'message': message, 'predictions': pred[0:1],
                                      'symptoms': symptoms, 'status': 'completed',
                                      'remedy': remedy})
 
